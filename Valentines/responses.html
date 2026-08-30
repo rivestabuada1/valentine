@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valentine Responses</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('./images/background.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgb(255, 187, 209);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #ff1744;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .response-count {
+            text-align: center;
+            font-size: 20px;
+            color: #ff1744;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: rgba(255, 23, 68, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .responses-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .response-item {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ff1744;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .response-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .response-answer {
+            background: linear-gradient(135deg, #ff1744 0%, #ff5983 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .response-answer.yes {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            font-size: 18px;
+            padding: 40px 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #ff1744 0%, #ff5983 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 23, 68, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #ff1744 0%, #ff5983 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💕 Valentine Responses 💕</h1>
+        <div class="subtitle">Check who answered your confession!</div>
+
+        <div class="response-count">
+            Total Responses: <span id="totalCount">0</span>
+        </div>
+
+        <div class="responses-list" id="responsesList">
+            <div class="empty-message">No responses yet. Share the link!</div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="index.html" class="back-link">← Back to Confession</a>
+            <a href="admin.html" class="back-link" style="background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white;">🔐 Admin</a>
+        </div>
+    </div>
+
+    <script>
+        function loadResponses() {
+            const responses = JSON.parse(localStorage.getItem('valentineResponses')) || [];
+            const responsesList = document.getElementById('responsesList');
+            const totalCount = document.getElementById('totalCount');
+
+            totalCount.textContent = responses.length;
+
+            if (responses.length === 0) {
+                responsesList.innerHTML = '<div class="empty-message">No responses yet. Share the link!</div>';
+                return;
+            }
+
+            responsesList.innerHTML = responses.map((response, index) => `
+                <div class="response-item">
+                    <div>
+                        <div class="response-name">${response.name}</div>
+                        <div style="font-size: 12px; color: #999; margin-top: 4px;">${response.timestamp}</div>
+                    </div>
+                    <div class="response-answer ${response.answer === 'yes' ? 'yes' : ''}">${response.answer === 'pending' ? 'Pending' : response.answer.toUpperCase()}</div>
+                </div>
+            `).join('');
+        }
+
+        // Auto-refresh every 2 seconds
+        loadResponses();
+        setInterval(loadResponses, 2000);
+    </script>
+</body>
+</html>
